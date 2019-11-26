@@ -1,3 +1,50 @@
 /* This file is for your main application css. */
 
 @import "./phoenix.css";
+
+.app_header nav ul li {
+    float: left;
+    margin-right: 2em;
+}
+
+.app_header nav ul::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.category-section {
+    margin-bottom: 2ex;
+}
+
+.category-h2 {
+    margin-bottom: 0.3ex;
+}
+
+.category-link {
+    font-weight: bold;
+}
+
+.category-li {
+    a {
+        text-decoration: underline;
+        font-weight: bold;
+    }
+    .library-description {
+        font-weight: bold;
+    }    
+}
+
+.outdated {
+    color: silver;
+    a {
+        color: silver;
+        font-weight: normal;
+    }
+    img {
+        opacity: 0.5;
+    }
+    .library-description {
+        font-weight: normal;
+    }
+}

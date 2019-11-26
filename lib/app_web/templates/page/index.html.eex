@@ -1,35 +1,22 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-  <p>A productive web framework that<br/>does not compromise speed or maintainability.</p>
-</section>
+<h1>Contents</h1>
+<ul>
+  <%= for category <- @categories do %>
+    <li><a class="category-link" href="#<%= category.anchor %>"><%= category.name %></a></li>
+  <% end %>
+</ul>
 
-<section class="row">
-  <article class="column">
-    <h2>Resources</h2>
+<%= for category <- @categories do %>
+  <section class="category-section">
+    <a name="<%= category.anchor %>"></a>
+    <h2 class="category-h2"><%= category.name %></h2>
+    <div><%= raw(category.description) %></div>
     <ul>
-      <li>
-        <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix/blob/v1.4/CHANGELOG.md">v1.4 Changelog</a>
-      </li>
+      <%= for library <- category.libraries do %>
+        <li class="category-li <%= if library.outdated?, do: "outdated", else: "" %>">
+        <a href="<%= library.url %>" target=_blank><%= library.name %></a>
+        ⭐ <%= library.stars %>, <img src="/images/calendar.svg" height="18"> <%= library.updated_ago_days %> — <span class="library-description"><%= raw(library.description) %></span>
+        </li>
+      <% end %>
     </ul>
-  </article>
-  <article class="column">
-    <h2>Help</h2>
-    <ul>
-      <li>
-        <a href="https://elixirforum.com/c/phoenix-forum">Forum</a>
-      </li>
-      <li>
-        <a href="https://webchat.freenode.net/?channels=elixir-lang">#elixir-lang on Freenode IRC</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">Twitter @elixirphoenix</a>
-      </li>
-    </ul>
-  </article>
-</section>
+  </section>
+<% end %>
