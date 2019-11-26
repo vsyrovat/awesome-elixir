@@ -39,3 +39,6 @@ npm-debug.log
 
 # VSCode Elixir Lang Server
 /.elixir_ls/
+
+# Development postgres files, etc...
+/var/
