@@ -6,7 +6,6 @@ defmodule AppWeb.PageController do
       %{
         name: "Foo",
         description: "FooDescription",
-        anchor: "foo",
         libraries: [
           %{
             name: "fooOne",
@@ -30,7 +29,6 @@ defmodule AppWeb.PageController do
       %{
         name: "Bar",
         description: "BarDescription",
-        anchor: "bar",
         libraries: [
           %{
             name: "barLib",

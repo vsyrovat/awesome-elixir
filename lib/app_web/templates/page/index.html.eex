@@ -1,13 +1,13 @@
 <h1>Contents</h1>
 <ul>
   <%= for category <- @categories do %>
-    <li><a class="category-link" href="#<%= category.anchor %>"><%= category.name %></a></li>
+    <li><a class="category-link" href="#<%= anchor(category.name) %>"><%= category.name %></a></li>
   <% end %>
 </ul>
 
 <%= for category <- @categories do %>
   <section class="category-section">
-    <a name="<%= category.anchor %>"></a>
+    <a name="<%= anchor(category.name) %>"></a>
     <h2 class="category-h2"><%= category.name %></h2>
     <div><%= raw(category.description) %></div>
     <ul>
