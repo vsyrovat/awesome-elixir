@@ -42,3 +42,5 @@ npm-debug.log
 
 # Development postgres files, etc...
 /var/
+
+/config/github.exs
