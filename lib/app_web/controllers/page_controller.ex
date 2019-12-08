@@ -9,8 +9,7 @@ defmodule AppWeb.PageController do
         libraries: [
           %{
             name: "fooOne",
-            description:
-              "Awesome Foo library for <a href=\"https://elixir-lang.org/\" target=_blank>Elixir</a>",
+            description: "Awesome Foo library for [Elixir](https://elixir-lang.org/)",
             url: "https://github.com/foo/one/",
             stars: 100,
             updated_ago_days: 100,

@@ -9,12 +9,12 @@
   <section class="category-section">
     <a name="<%= anchor(category.name) %>"></a>
     <h2 class="category-h2"><%= category.name %></h2>
-    <div><%= raw(category.description) %></div>
+    <div><%= category.description |> description() |> raw() %></div>
     <ul>
       <%= for library <- category.libraries do %>
         <li class="category-li <%= if library.outdated?, do: "outdated", else: "" %>">
         <a href="<%= library.url %>" target=_blank><%= library.name %></a>
-        ⭐ <%= library.stars %>, <img src="/images/calendar.svg" height="18"> <%= library.updated_ago_days %> — <span class="library-description"><%= raw(library.description) %></span>
+        ⭐ <%= library.stars %>, <img src="/images/calendar.svg" height="18"> <%= library.updated_ago_days %> — <span class="library-description"><%= library.description |> description() |> raw() %></span>
         </li>
       <% end %>
     </ul>
