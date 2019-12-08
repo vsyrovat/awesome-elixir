@@ -12,16 +12,14 @@ defmodule AppWeb.PageController do
             description: "Awesome Foo library for [Elixir](https://elixir-lang.org/)",
             url: "https://github.com/foo/one/",
             stars: 100,
-            updated_ago_days: 100,
-            outdated?: false
+            updated_ago_days: 100
           },
           %{
             name: "fooTwo",
             description: "Foo library for Elixir №1 in the World",
             url: "https://github.com/foo/two/",
             stars: 200,
-            updated_ago_days: 222,
-            outdated?: true
+            updated_ago_days: 222
           }
         ]
       },
@@ -34,16 +32,14 @@ defmodule AppWeb.PageController do
             description: "Simple and fast Bar package",
             url: "https://github.com/bar/lib/",
             stars: 70,
-            updated_ago_days: 400,
-            outdated?: true
+            updated_ago_days: 400
           },
           %{
             name: "justBar",
             description: "Most rumored Bar lib for Phoenix",
             url: "https://github.com/bar/another/",
             stars: 99,
-            updated_ago_days: 70,
-            outdated?: false
+            updated_ago_days: 70
           }
         ]
       }

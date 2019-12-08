@@ -12,7 +12,7 @@
     <div><%= category.description |> description() |> raw() %></div>
     <ul>
       <%= for library <- category.libraries do %>
-        <li class="category-li <%= if library.outdated?, do: "outdated", else: "" %>">
+        <li class="category-li <%= if outdated?(library.updated_ago_days), do: "outdated", else: "" %>">
         <a href="<%= library.url %>" target=_blank><%= library.name %></a>
         ⭐ <%= library.stars %>, <img src="/images/calendar.svg" height="18"> <%= library.updated_ago_days %> — <span class="library-description"><%= library.description |> description() |> raw() %></span>
         </li>

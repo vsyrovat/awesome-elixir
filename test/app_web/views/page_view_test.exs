@@ -22,4 +22,14 @@ defmodule AppWeb.PageViewTest do
     assert description("go to the [HTML](#html) section") ==
              "go to the <a href=\"#html\">HTML</a> section"
   end
+
+  test "calculate outdated? flag by updated_ago_days" do
+    assert outdated?(400)
+    assert not outdated?(100)
+  end
+
+  test "calculate outdated? flag by pushed_at" do
+    assert outdated?(NaiveDateTime.add(NaiveDateTime.utc_now(), -400 * 86400))
+    assert not outdated?(NaiveDateTime.add(NaiveDateTime.utc_now(), -100 * 86400))
+  end
 end
