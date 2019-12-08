@@ -1,50 +1,21 @@
 defmodule AppWeb.PageController do
   use AppWeb, :controller
 
-  def index(conn, _params) do
-    categories = [
-      %{
-        name: "Foo",
-        description: "FooDescription",
-        libraries: [
-          %{
-            name: "fooOne",
-            description: "Awesome Foo library for [Elixir](https://elixir-lang.org/)",
-            url: "https://github.com/foo/one/",
-            stars: 100,
-            updated_ago_days: 100
-          },
-          %{
-            name: "fooTwo",
-            description: "Foo library for Elixir №1 in the World",
-            url: "https://github.com/foo/two/",
-            stars: 200,
-            updated_ago_days: 222
-          }
-        ]
-      },
-      %{
-        name: "Bar",
-        description: "BarDescription",
-        libraries: [
-          %{
-            name: "barLib",
-            description: "Simple and fast Bar package",
-            url: "https://github.com/bar/lib/",
-            stars: 70,
-            updated_ago_days: 400
-          },
-          %{
-            name: "justBar",
-            description: "Most rumored Bar lib for Phoenix",
-            url: "https://github.com/bar/another/",
-            stars: 99,
-            updated_ago_days: 70
-          }
-        ]
-      }
-    ]
+  alias App.AwesomeProvider
+  alias NaiveDateTime, as: NDT
 
+  defp transform_repository(%{} = r) do
+    r
+    |> Map.merge(%{updated_ago_days: div(NDT.diff(NDT.utc_now(), r.pushed_at, :second), 86400)})
+  end
+
+  defp transform_category(%{} = c) do
+    c
+    |> Map.merge(%{libraries: Enum.map(c.repositories, &transform_repository/1)})
+  end
+
+  def index(conn, _params) do
+    categories = AwesomeProvider.categories() |> Enum.map(&transform_category/1)
     render(conn, "index.html", %{categories: categories})
   end
 end
