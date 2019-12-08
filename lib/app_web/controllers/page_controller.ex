@@ -4,9 +4,14 @@ defmodule AppWeb.PageController do
   alias App.AwesomeProvider
   alias NaiveDateTime, as: NDT
 
+  defp pushed_at_to_updated_ago_days(:unknown), do: :unknown
+
+  defp pushed_at_to_updated_ago_days(%NaiveDateTime{} = pushed_at),
+    do: div(NDT.diff(NDT.utc_now(), pushed_at, :second), 86400)
+
   defp transform_repository(%{} = r) do
     r
-    |> Map.merge(%{updated_ago_days: div(NDT.diff(NDT.utc_now(), r.pushed_at, :second), 86400)})
+    |> Map.merge(%{updated_ago_days: pushed_at_to_updated_ago_days(r.pushed_at)})
   end
 
   defp transform_category(%{} = c) do

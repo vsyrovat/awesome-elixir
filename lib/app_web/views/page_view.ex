@@ -24,6 +24,8 @@ defmodule AppWeb.PageView do
     )
   end
 
+  def outdated?(:unknown), do: false
+
   @spec outdated?(NaiveDateTime.t()) :: boolean()
   def outdated?(%NaiveDateTime{} = pushed_at) do
     div(NaiveDateTime.diff(NaiveDateTime.utc_now(), pushed_at), 86400) > @outdated_line_days
@@ -32,4 +34,7 @@ defmodule AppWeb.PageView do
   @spec outdated?(integer()) :: boolean()
   def outdated?(pushed_days_ago) when is_integer(pushed_days_ago),
     do: pushed_days_ago > @outdated_line_days
+
+  def unknown?(:unknown), do: "?"
+  def unknown?(s), do: s
 end
