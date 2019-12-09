@@ -1,16 +1,14 @@
 defmodule App.AwesomeProvider do
-  alias App.Github.CatalogFetcher
-  alias App.Github.CatalogParser
+  alias App.LocalCopy
 
   def categories do
-    {:ok, readme_md} = CatalogFetcher.fetch_readme()
-    categories = CatalogParser.parse(readme_md)
+    categories = LocalCopy.list_categories()
 
     categories
     |> Enum.map(fn c ->
       Map.merge(c, %{
         repositories:
-          Enum.map(c.repositories, fn r ->
+          Enum.map(%{}, fn r ->
             Map.merge(r, %{pushed_at: :unknown, stars: :unknown})
           end)
       })
