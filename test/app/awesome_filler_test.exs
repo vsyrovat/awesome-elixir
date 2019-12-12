@@ -2,13 +2,14 @@ defmodule App.AwesomeFillerTest do
   use App.DataCase
   alias App.AwesomeFiller
   alias App.Repo
-  alias App.LocalCopy.Category
+  alias App.LocalCopy
+  alias App.Github.CatalogParser
 
   def category_fixture(timediff) when is_integer(timediff) do
     timestamp = NaiveDateTime.add(NaiveDateTime.utc_now(), -timediff)
 
-    %Category{}
-    |> Category.changeset(%{name: "foo", description: "foo", checked_at: timestamp})
+    %LocalCopy.Category{}
+    |> LocalCopy.Category.changeset(%{name: "foo", description: "foo", checked_at: timestamp})
     |> Repo.insert()
   end
 
@@ -28,21 +29,56 @@ defmodule App.AwesomeFillerTest do
 
   test "_create_or_update_category" do
     {:ok, _} =
-      AwesomeFiller._create_or_update_category(%{
+      AwesomeFiller._create_or_update_category(%CatalogParser.Category{
         name: "AI",
-        description: "Artificial Intelligence"
+        description: "Artificial Intelligence",
+        repositories: []
       })
 
-    category = Repo.get_by(Category, name: "AI")
+    category = Repo.get_by(LocalCopy.Category, name: "AI")
     assert category.description == "Artificial Intelligence"
 
     {:ok, _} =
-      AwesomeFiller._create_or_update_category(%{
+      AwesomeFiller._create_or_update_category(%CatalogParser.Category{
         name: "AI",
-        description: "No so smart"
+        description: "No so smart",
+        repositories: []
       })
 
-    category = Repo.get_by(Category, name: "AI")
+    category = Repo.get_by(LocalCopy.Category, name: "AI")
     assert category.description == "No so smart"
+  end
+
+  test "_create_or_update_repository" do
+    {:ok, _} =
+      AwesomeFiller._create_or_update_repository(%CatalogParser.Repository{
+        name: "Neiro",
+        description: "Neiro package",
+        url: "https://github.com/neiro/neiro"
+      })
+
+    repository = Repo.get_by(LocalCopy.Repository, alias: "neiro/neiro")
+    assert repository.name == "Neiro"
+    assert repository.description == "Neiro package"
+    assert repository.url == "https://github.com/neiro/neiro"
+
+    {:ok, _} =
+      AwesomeFiller._create_or_update_repository(%CatalogParser.Repository{
+        name: "Neiro 2",
+        description: "New Neiro version",
+        url: "https://github.com/neiro/neiro"
+      })
+
+    repository = Repo.get_by(LocalCopy.Repository, alias: "neiro/neiro")
+    assert repository.name == "Neiro 2"
+    assert repository.description == "New Neiro version"
+  end
+  
+  test "_create_or_update_repository if no github url" do
+    assert AwesomeFiller._create_or_update_repository(%CatalogParser.Repository{
+      name: "Lambada",
+      description: "Lambada",
+      url: "https://lambada.org"
+    }) == :error
   end
 end

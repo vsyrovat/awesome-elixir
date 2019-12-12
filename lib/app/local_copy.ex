@@ -1,7 +1,9 @@
 defmodule App.LocalCopy do
   import Ecto.Query, warn: false
+
   alias App.Repo
   alias App.LocalCopy.Category
+  alias App.LocalCopy.Repository
 
   def list_categories do
     Repo.all(Category)
@@ -27,5 +29,31 @@ defmodule App.LocalCopy do
 
   def change_category(%Category{} = category) do
     Category.changeset(category, %{})
+  end
+
+  def list_repositories do
+    Repo.all(Repository)
+  end
+
+  def get_repository!(id), do: Repo.get!(Repository, id)
+
+  def create_repository(attrs \\ %{}) do
+    %Repository{}
+    |> Repository.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_repository(%Repository{} = repository, attrs) do
+    repository
+    |> Repository.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def delete_repository(%Repository{} = repository) do
+    Repo.delete(repository)
+  end
+
+  def change_repository(%Repository{} = repository) do
+    Repository.changeset(repository, %{})
   end
 end
