@@ -29,32 +29,35 @@ defmodule App.AwesomeFiller do
 
   def _create_or_update_category(%CatalogParser.Category{} = c) do
     timestamp = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-    attrs = %{name: c.name, description: c.description, checked_at: timestamp}
 
-    result =
-      case category = Repo.get_by(LocalCopy.Category, name: c.name) do
-        nil -> LocalCopy.create_category(attrs)
-        _ -> LocalCopy.update_category(category, attrs)
-      end
+    attrs = %{
+      name: c.name,
+      description: c.description,
+      checked_at: timestamp,
+      repositories:
+        c.repositories
+        |> Enum.map(fn r -> case Helpers.short_name(r.url) do {:ok, x} -> x; _ -> nil end end)
+        |> Enum.filter(fn x -> x end)
+    }
 
     Enum.each(c.repositories, fn r -> _create_or_update_repository(r) end)
 
-    result
+    case category = Repo.get_by(LocalCopy.Category, name: c.name) do
+      nil -> LocalCopy.create_category(attrs)
+      _ -> LocalCopy.update_category(category, attrs)
+    end
   end
 
   def _create_or_update_repository(%CatalogParser.Repository{} = r) do
     _create_or_update_repository(Helpers.short_name(r.url), r)
   end
-  
-  def _create_or_update_repository({:ok, alias}, %CatalogParser.Repository{} = r) do
-    timestamp = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
+  def _create_or_update_repository({:ok, alias}, %CatalogParser.Repository{} = r) do
     attrs = %{
       name: r.name,
       description: r.description,
       url: r.url,
-      alias: alias,
-      checked_at: timestamp
+      alias: alias
     }
 
     case repository = Repo.get_by(LocalCopy.Repository, alias: attrs.alias) do
@@ -62,6 +65,6 @@ defmodule App.AwesomeFiller do
       _ -> LocalCopy.update_repository(repository, attrs)
     end
   end
-  
-  def _create_or_update_repository(:error, _), do: :error
+
+  def _create_or_update_repository(_, _), do: {:error}
 end

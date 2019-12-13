@@ -10,11 +10,13 @@ defmodule App.LocalCopyTest do
     @valid_attrs %{
       description: "some description",
       name: "some name",
+      repositories: ["foo/foo", "bar/bar"],
       checked_at: ~N[2010-04-17 14:00:00]
     }
     @update_attrs %{
       description: "some updated description",
       name: "some updated name",
+      repositories: ["new/new"],
       checked_at: ~N[2011-05-18 15:01:01]
     }
     @invalid_attrs %{description: nil, name: nil}
@@ -42,6 +44,7 @@ defmodule App.LocalCopyTest do
       assert {:ok, %Category{} = category} = LocalCopy.create_category(@valid_attrs)
       assert category.description == "some description"
       assert category.name == "some name"
+      assert category.repositories == ["foo/foo", "bar/bar"]
     end
 
     test "create_category/1 with invalid data returns error changeset" do
@@ -53,6 +56,7 @@ defmodule App.LocalCopyTest do
       assert {:ok, %Category{} = category} = LocalCopy.update_category(category, @update_attrs)
       assert category.description == "some updated description"
       assert category.name == "some updated name"
+      assert category.repositories == ["new/new"]
     end
 
     test "update_category/2 with invalid data returns error changeset" do

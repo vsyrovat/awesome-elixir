@@ -36,5 +36,6 @@ defmodule AppWeb.PageView do
     do: pushed_days_ago > @outdated_line_days
 
   def unknown?(:unknown), do: "?"
+  def unknown?(nil), do: "?"
   def unknown?(s), do: s
 end

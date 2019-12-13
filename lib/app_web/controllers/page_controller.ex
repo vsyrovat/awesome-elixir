@@ -5,6 +5,7 @@ defmodule AppWeb.PageController do
   alias NaiveDateTime, as: NDT
 
   defp pushed_at_to_updated_ago_days(:unknown), do: :unknown
+  defp pushed_at_to_updated_ago_days(nil), do: :unknown
 
   defp pushed_at_to_updated_ago_days(%NaiveDateTime{} = pushed_at),
     do: div(NDT.diff(NDT.utc_now(), pushed_at, :second), 86400)

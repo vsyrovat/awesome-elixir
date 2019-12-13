@@ -32,11 +32,14 @@ defmodule App.AwesomeFillerTest do
       AwesomeFiller._create_or_update_category(%CatalogParser.Category{
         name: "AI",
         description: "Artificial Intelligence",
-        repositories: []
+        repositories: [
+          %CatalogParser.Repository{url: "https://github.com/foo/bar", name: "", description: ""}
+        ]
       })
 
     category = Repo.get_by(LocalCopy.Category, name: "AI")
     assert category.description == "Artificial Intelligence"
+    assert category.repositories == ["foo/bar"]
 
     {:ok, _} =
       AwesomeFiller._create_or_update_category(%CatalogParser.Category{
@@ -73,12 +76,12 @@ defmodule App.AwesomeFillerTest do
     assert repository.name == "Neiro 2"
     assert repository.description == "New Neiro version"
   end
-  
+
   test "_create_or_update_repository if no github url" do
     assert AwesomeFiller._create_or_update_repository(%CatalogParser.Repository{
-      name: "Lambada",
-      description: "Lambada",
-      url: "https://lambada.org"
-    }) == :error
+             name: "Lambada",
+             description: "Lambada",
+             url: "https://lambada.org"
+           }) == {:error}
   end
 end
