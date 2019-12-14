@@ -32,16 +32,20 @@ defmodule AppWeb.PageController do
     |> Enum.map(fn c ->
       %{c | libraries: Enum.filter(c.libraries, fn r -> r.stars >= min_stars end)}
     end)
-    |> Enum.filter(fn c -> Enum.count(c.libraries) > 0 end)
   end
 
   defp filter_by_stars(categories, _), do: categories
+
+  defp filter_by_libraries_presence(categories) do
+    categories |> Enum.filter(fn c -> Enum.count(c.libraries) > 0 end)
+  end
 
   def index(conn, params) do
     categories =
       AwesomeProvider.categories()
       |> Enum.map(&transform_category/1)
       |> filter_by_stars(params["min_stars"])
+      |> filter_by_libraries_presence()
 
     render(conn, "index.html", %{categories: categories})
   end

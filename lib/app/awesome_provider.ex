@@ -3,9 +3,10 @@ defmodule App.AwesomeProvider do
 
   def categories do
     categories = LocalCopy.list_categories()
-    
-    repositories = LocalCopy.list_repositories()
-    |> Enum.filter(fn r -> r.stars != nil end)
+
+    repositories =
+      LocalCopy.list_repositories()
+      |> Enum.filter(fn r -> r.stars != nil end)
 
     categories
     |> Enum.map(fn c ->
