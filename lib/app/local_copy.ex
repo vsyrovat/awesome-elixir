@@ -6,7 +6,7 @@ defmodule App.LocalCopy do
   alias App.LocalCopy.Repository
 
   def list_categories do
-    Repo.all(Category)
+    Category |> order_by(asc: :name) |> Repo.all()
   end
 
   def get_category!(id), do: Repo.get!(Category, id)
@@ -32,7 +32,7 @@ defmodule App.LocalCopy do
   end
 
   def list_repositories do
-    Repo.all(Repository)
+    Repository |> order_by(asc: :name) |> Repo.all()
   end
 
   def get_repository!(id), do: Repo.get!(Repository, id)
