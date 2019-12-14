@@ -2,6 +2,7 @@ defmodule App.Github.RepositoryFetcher do
   use TypedStruct
   use Tesla
 
+  plug Tesla.Middleware.FollowRedirects, max_redirects: 1
   plug Tesla.Middleware.BaseUrl, "https://api.github.com"
   plug Tesla.Middleware.Headers, headers()
   plug Tesla.Middleware.JSON

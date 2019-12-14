@@ -13,18 +13,18 @@ defmodule App.AwesomeFillerTest do
     |> Repo.insert()
   end
 
-  test "_need_refill? on empty table" do
-    assert AwesomeFiller._need_refill?()
+  test "_need_fill_categories? on empty table" do
+    assert AwesomeFiller._need_fill_categories?()
   end
 
-  test "_need_refill? when outdated" do
+  test "_need_fill_categories? when outdated" do
     category_fixture(2 * 86400)
-    assert AwesomeFiller._need_refill?()
+    assert AwesomeFiller._need_fill_categories?()
   end
 
-  test "_need_refill? when not outdated" do
+  test "_need_fill_categories? when not outdated" do
     category_fixture(10 * 3600)
-    assert not AwesomeFiller._need_refill?()
+    assert not AwesomeFiller._need_fill_categories?()
   end
 
   test "_create_or_update_category" do
