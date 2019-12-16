@@ -1,11 +1,11 @@
 defmodule App.Release do
   @moduledoc """
   Need due release for perform migrations in production.
-  
+
   In production run:
   DATABASE_URL=... _build/prod/rel/app/bin/app eval App.Release.migrate
   """
-  
+
   @app :app
 
   def migrate do

@@ -22,9 +22,15 @@ secret_key_base =
     environment variable SECRET_KEY_BASE is missing.
     You can generate one by calling: mix phx.gen.secret
     """
-    
+
+{:ok, listen_ip} = :inet.parse_address(to_charlist(System.get_env("LISTEN_IP") || "127.0.0.1"))
+
 config :app, AppWeb.Endpoint,
-  http: [:inet6, port: String.to_integer(System.get_env("PORT") || "4000")],
+  http: [
+    :inet6,
+    ip: listen_ip,
+    port: String.to_integer(System.get_env("PORT") || "4000")
+  ],
   secret_key_base: secret_key_base,
   github_api_token: System.get_env("GITHUB_API_TOKEN")
 
