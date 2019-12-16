@@ -27,7 +27,6 @@ secret_key_base =
 
 config :app, AppWeb.Endpoint,
   http: [
-    :inet6,
     ip: listen_ip,
     port: String.to_integer(System.get_env("PORT") || "4000")
   ],
