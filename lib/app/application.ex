@@ -16,15 +16,20 @@ defmodule App.Application do
         # Starts a worker by calling: App.Worker.start_link(arg)
         # {App.Worker, arg},
       ] ++
-        case Mix.env() do
-          :test -> []
-          _ -> [App.Scheduler]
-        end
+        env_specific_children()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: App.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  case Mix.env() do
+    :test ->
+      defp env_specific_children, do: []
+
+    _ ->
+      defp env_specific_children, do: [App.Scheduler]
   end
 
   # Tell Phoenix to update the endpoint configuration
