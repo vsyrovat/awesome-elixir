@@ -2,13 +2,12 @@ defmodule AppWeb.PageController do
   use AppWeb, :controller
 
   alias App.AwesomeProvider
-  alias NaiveDateTime, as: NDT
 
   defp pushed_at_to_updated_ago_days(:unknown), do: :unknown
   defp pushed_at_to_updated_ago_days(nil), do: :unknown
 
   defp pushed_at_to_updated_ago_days(%NaiveDateTime{} = pushed_at),
-    do: div(NDT.diff(NDT.utc_now(), pushed_at, :second), 86400)
+    do: div(NaiveDateTime.diff(NaiveDateTime.utc_now(), pushed_at, :second), 86400)
 
   defp transform_repository(%{} = r) do
     r
