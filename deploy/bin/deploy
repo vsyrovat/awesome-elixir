@@ -53,6 +53,7 @@ ssh $TARGET \ "cd $TARGET_DIR && \
   sed -i \"s#{{DATABASE_URL}}#${DATABASE_URL}#\" .env && \
   sed -i \"s#{{SECRET_KEY_BASE}}#${SECRET_KEY_BASE}#\" .env && \
   sed -i \"s#{{PUBLIC_HOST}}#${PUBLIC_HOST}#\" .env && \
+  sed -i \"s#{{GITHUB_API_TOKEN}}#${GITHUB_API_TOKEN}#\" .env && \
   chmod +x *.sh && \
   ./migrate.sh && \
   ./up.sh && \
