@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+if [ ! -s "$SCRIPT_DIR/.vars" ]; then
+  echo "Error: file $SCRIPT_DIR/.vars not found or zero size."
+  exit 1
+fi
+source $SCRIPT_DIR/.vars
+
+cmd="$SCRIPT_DIR/docker-compose down --remove-orphans"
+
+if [ $# -gt 1 ]; then
+  echo "Expected 0 or 1 param, but $# params given."
+  exit 1
+elif [ $# -eq 1 ]; then
+  if [ "$1" == "--purge" ]; then
+    $cmd -v --rmi local
+    rm -rf $POSTGRES_DIR
+    echo "Postgres was stopped and purged."
+  else
+    echo "Unknown '$1' param, known param: '--purge'."
+    exit 1
+  fi
+else
+  $cmd
+  echo "Postgres was stopped and kepped."
+  echo "Hint: use param '--purge' if you want to purge all Postgres data."
+fi

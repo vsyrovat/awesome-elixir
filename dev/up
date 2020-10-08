@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+if [ ! -s "$SCRIPT_DIR/.vars" ]; then
+  echo "Error: file $SCRIPT_DIR/.vars not found or zero size."
+  exit 1
+fi
+source $SCRIPT_DIR/.vars
+
+mkdir -p $POSTGRES_DIR
+
+$SCRIPT_DIR/docker-compose up -d $@
+
+echo "Postgres started/running on port $POSTGRES_PORT"

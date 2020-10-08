@@ -2,11 +2,11 @@ use Mix.Config
 
 # Configure your database
 config :app, App.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "app_dev",
+  username: "awesome_elixir",
+  password: "awesome_elixir",
+  database: "awesome_elixir_dev",
   hostname: "localhost",
-  port: 55432,
+  port: 5432,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
