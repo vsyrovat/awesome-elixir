@@ -1,5 +1,6 @@
 defmodule App.Github.CatalogFetcher do
   use Tesla
+  require Logger
 
   @readme_url "https://raw.githubusercontent.com/h4cc/awesome-elixir/master/README.md"
 
@@ -8,8 +9,13 @@ defmodule App.Github.CatalogFetcher do
     {:ok, response} = get(@readme_url)
 
     case response do
-      %Tesla.Env{status: 200, body: body} -> {:ok, body}
-      _ -> {:error, response}
+      %Tesla.Env{status: 200, body: body} ->
+        Logger.info("Fetched " <> @readme_url)
+        {:ok, body}
+
+      _ ->
+        Logger.warn("Error fetch " <> @readme_url)
+        {:error, response}
     end
   end
 end

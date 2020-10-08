@@ -1,5 +1,6 @@
 defmodule App.AwesomeFiller do
   import Ecto.Query, only: [from: 2]
+  require Logger
 
   alias App.Github.CatalogFetcher
   alias App.Github.CatalogParser
@@ -11,8 +12,10 @@ defmodule App.AwesomeFiller do
   @refresh_period_second 86400
 
   def fill_if_need do
+    Logger.info("Refill started")
     _fill_categories_if_need()
     _fill_repositories_if_need()
+    Logger.info("Refill finished")
   end
 
   def _fill_categories_if_need, do: if(_need_fill_categories?(), do: _fill_categories())

@@ -1,6 +1,7 @@
 defmodule App.Github.RepositoryFetcher do
   use TypedStruct
   use Tesla
+  require Logger
 
   plug Tesla.Middleware.FollowRedirects, max_redirects: 1
   plug Tesla.Middleware.BaseUrl, "https://api.github.com"
@@ -45,18 +46,26 @@ defmodule App.Github.RepositoryFetcher do
 
     case github_response do
       %Tesla.Env{status: 200} ->
+        Logger.info("Repo #{repo} fetched")
         {:ok, repo(github_response), limit(github_response)}
 
       %Tesla.Env{status: 404} ->
+        Logger.warn("Repo #{repo} is private or not exists")
         {:error, :repo_private}
 
       %Tesla.Env{status: 403} ->
         case l = limit(github_response) do
-          %Limit{remain: 0} -> {:error, :limit_exceeded, l}
-          _ -> {:error, :forbidden}
+          %Limit{remain: 0} ->
+            Logger.warn("Limit reached, #{inspect(l)}")
+            {:error, :limit_exceeded, l}
+
+          _ ->
+            Logger.warn("Repo #{repo} forbidden")
+            {:error, :forbidden}
         end
 
       _ ->
+        Logger.error("Unknown error while fetch #{repo}")
         {:error, github_response}
     end
   end
