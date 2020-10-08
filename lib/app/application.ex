@@ -25,7 +25,7 @@ defmodule App.Application do
   end
 
   case Mix.env() do
-    :test ->
+    value when value in [:test, :dev] ->
       defp env_specific_children, do: []
 
     _ ->
