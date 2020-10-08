@@ -1,0 +1,2 @@
+targets/*
+!targets/sample-target.env

@@ -1,0 +1,16 @@
+/.idea/
+/.vscode/
+/.git/
+/_build/
+/.elixir_ls/
+/assets/node_modules/
+/deploy/
+/deps/
+/dev/
+/priv/static/
+/priv/plts/
+/.dockerignore
+/.gitattributes
+/.gitignore
+/Makefile
+/erl_crash.dump

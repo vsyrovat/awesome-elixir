@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+while getopts ":t:" opt; do
+  case $opt in
+    t)
+      target="$OPTARG"
+      set -o allexport
+      [ -f $target ] || { echo "File $target not found"; exit 1; }
+      . $target
+      set +o allexport
+    ;;
+    \?)
+      echo "Invalid option -$OPTARG" >&2
+      exit 1
+    ;;
+  esac
+done
+
+# Timeout after 30 sec if we still haven't gotten a response
+timeout 30s bash <<EOT
+# Wait until an HTTP request succeeds against staging:PORT
+function ping_server(){
+    while true; do
+        if curl -sSf "${HEALTH_CHECK_URL}" >/dev/null; then
+            echo "Health-check OK"
+            exit 0
+        fi
+        sleep 1
+    done
+}
+
+ping_server
+EOT
