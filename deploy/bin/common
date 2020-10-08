@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+DOCKER_IMAGE_NAME=awesome-elixir
+
+set_vars()
+{
+  GIT_BRANCH=${GIT_BRANCH:-`git branch --show-current`}
+  BUILD_NUMBER=${BUILD_NUMBER:-0}
+  DATE_UTC=`date -u '+%Y%m%d'`
+  COMMIT_HASH=`git rev-parse --short=6 HEAD`
+  COMMIT_TIMESTAMP=`git show --no-patch --no-notes --pretty='%ct' $COMMIT_HASH`
+  COMMIT_DATE_UTC=`date -d "@$COMMIT_TIMESTAMP" -u '+%Y%m%d'`
+
+  DOCKER_IMAGE_TAG=$GIT_BRANCH-$BUILD_NUMBER-$COMMIT_DATE_UTC-$COMMIT_HASH
+  DOCKER_IMAGE=$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+  DOCKER_IMAGE_FILE=${DOCKER_IMAGE_NAME}--$DOCKER_IMAGE_TAG.tar.gz
+}
+
+set_vars

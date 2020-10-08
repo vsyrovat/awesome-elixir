@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+PROJECT_DIR=$( dirname "$( dirname "${DIR}" )" )
+TPL_DIR=$( dirname "${DIR}" )/tpl
+
+. $DIR/common
+
+while getopts ":t:" opt; do
+  case $opt in
+    t)
+      target="$OPTARG"
+      set -o allexport
+      [ -f $target ] || { echo "File $target not found"; exit 1; }
+      . $target
+      set +o allexport
+    ;;
+    \?)
+      echo "Invalid option -$OPTARG" >&2
+      exit 1
+    ;;
+  esac
+done
+
+set -x
+
+TARGET=${TARGET_USER}@${TARGET_HOST}
+TARGET_URL=${TARGET}:${TARGET_DIR}
+
+scp $DOCKER_IMAGE_FILE $TARGET_URL/$DOCKER_IMAGE_FILE
+ssh $TARGET "cd $TARGET_DIR && docker load -i ${DOCKER_IMAGE_FILE} && rm ${DOCKER_IMAGE_FILE}"
+
+set +e
+ssh $TARGET "cd $TARGET_DIR && docker-compose down --remove-orphans"
+set -e
+
+cd $TPL_DIR && scp -r * .env $TARGET_URL
+
+{ set +x; } 2>/dev/null # Avoid getting secrets into logs
+echo "Modifying files on target and starting the application..."
+ssh $TARGET \ "cd $TARGET_DIR && \
+  sed -i \"s#{{DOCKER_IMAGE}}#${DOCKER_IMAGE}#\" docker-compose.yml && \
+  sed -i \"s#{{RELEASE_NODE}}#${RELEASE_NODE}#\" .env && \
+  sed -i \"s#{{PORT}}#${PORT}#\" .env && \
+  sed -i \"s#{{DATABASE_URL}}#${DATABASE_URL}#\" .env && \
+  sed -i \"s#{{SECRET_KEY_BASE}}#${SECRET_KEY_BASE}#\" .env && \
+  sed -i \"s#{{PUBLIC_HOST}}#${PUBLIC_HOST}#\" .env && \
+  chmod +x *.sh && \
+  ./migrate.sh && \
+  ./up.sh && \
+  ./health-check.sh \
+"
